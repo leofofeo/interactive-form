@@ -4,9 +4,8 @@ $('document').ready(function(){
 
     appendAndHideOtherRoleField();
     configureShirtOptions();
+    $('label input:checkbox').on('change', handleTimeOptions);
 });
-
-
 
 
 
@@ -71,4 +70,37 @@ const configureShirtOptions = () => {
     });
 
 }
+const handleActivityRegistration = () => {
+    // With strings, you can use string.includes to check whether it contains the start date of some other string, which will allow you to sort accordingly
+    $('input:checkbox').on('change', console.log('test'));
+    console.log('hello from har');
+}
 
+const handleTimeOptions = (elem) => {
+    console.log('test');
+    const selectedTimeRegex = /((monday|tuesday|wednesday|thursday|friday|saturday|sunday) \d.m)/i;
+    const selectedPriceRegex = /\$\d{3}/;
+    const $checkbox = elem.target;
+    const $parentLabel  = $($checkbox).parent()[0];
+    const $parentLabelText = $($parentLabel).text();
+    const selectedTimeRegexResult = $parentLabelText.match(selectedTimeRegex);
+    let selectedTime = '';
+    if (selectedTimeRegexResult !== null){    
+        selectedTime = selectedTimeRegexResult[0];
+    }
+    const selectedPrice = $parentLabelText.match(selectedPriceRegex)[0].split('$')[1];
+    if (selectedTime != ''){
+        disableConflictingTimes(selectedTime, elem.target);
+    }
+    
+}
+
+const disableConflictingTimes = (selectedActivityTime, selectedInput) => {
+    const $selectedCheckbox = $(selectedInput);
+    console.log('from disableConflictingTimes, here\'s your time:', selectedActivityTime);
+    console.log($selectedCheckbox);
+}
+
+const calculateTotalPrice = (selectedActivityPrice) => {
+
+}
