@@ -6,7 +6,8 @@ $('document').ready(function(){
     configureShirtOptions();
     $('label input:checkbox').on('change', handleTimeOptions);
     $('fieldset.activities').append(`<h3>Price total: $<span class="price-total">${priceTotal}</span></h3>`);
-    
+    configureInitialPayment();
+    $('#payment').on('change', configurePaymentVisibility);
 });
 
 const appendAndHideOtherRoleField = () => {
@@ -142,4 +143,30 @@ const calculateTotalPrice = (selectedActivityPrice, calcType) => {
 
 const updatePriceUI = () => {
     $('.price-total').html(priceTotal);
+}
+
+const configureInitialPayment = () => {
+    $('#payment').val('credit card');
+    $('#paypal').hide();
+    $('#bitcoin').hide();
+    $('#credit-card').show();
+}
+
+const configurePaymentVisibility = (elem) => {
+    const paymentType = ($(elem.target).val());
+    switch (paymentType) {
+        case 'paypal':
+            $('#credit-card').hide();
+            $('#bitcoin').hide();
+            $('#paypal').show();
+            break;
+        case 'bitcoin':
+            $('#credit-card').hide();
+            $('#paypal').hide();
+            $('#bitcoin').show();
+            break;
+        default:
+            configureInitialPayment();
+            break;
+    }
 }
