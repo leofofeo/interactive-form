@@ -101,6 +101,10 @@ input[type="radio"] {
 	display: inline-block;
 }
 
+input:disabled {
+	cursor: not-allowed;
+}
+
 button {
 	color: #fff;
 	padding: .55em 1.25em;
