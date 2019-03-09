@@ -8,6 +8,7 @@ $('document').ready(function(){
     $('fieldset.activities').append(`<h3>Price total: $<span class="price-total">${priceTotal}</span></h3>`);
     configureInitialPayment();
     $('#payment').on('change', configurePaymentVisibility);
+    $('form').on('submit', validateForm);
 });
 
 const appendAndHideOtherRoleField = () => {
@@ -77,7 +78,7 @@ const configureShirtOptions = () => {
 
 }
 
-const handleTimeOptions = (elem) => {
+const handleTimeOptions = elem => {
     // Create regex options for isolating the activity time and activity price from the selectedActivity's text
     const selectedTimeRegex = /((monday|tuesday|wednesday|thursday|friday|saturday|sunday) \d.m)/i;
     const selectedPriceRegex = /\$\d{3}/;
@@ -152,7 +153,7 @@ const configureInitialPayment = () => {
     $('#credit-card').show();
 }
 
-const configurePaymentVisibility = (elem) => {
+const configurePaymentVisibility = elem => {
     const paymentType = ($(elem.target).val());
     switch (paymentType) {
         case 'paypal':
@@ -169,4 +170,47 @@ const configurePaymentVisibility = (elem) => {
             configureInitialPayment();
             break;
     }
+}
+
+const validateForm = event => {
+    let formInvalid = true;
+    const nameExists = validateNameField();
+    const validEmail = validateEmailField();
+    const activitySelected = validateActivities();
+    const validCreditCard = validateCreditCard();
+    console.log('hello from validateForm');
+    console.log('prevented default');
+
+    if (nameExists && validEmail &&activitySelected && validCreditCard) {
+        formInvalid = false;
+    }
+    if (formInvalid) {
+        event.preventDefault();
+    }
+}
+
+const validateNameField = () => {
+    if ($('#name').val()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const validateEmailField = () => {
+    const email = $('#mail').val();
+    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (emailRegex.test(email)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const validateActivities = () => {
+    
+}
+
+const validateCreditCard = () => {
+    
 }
