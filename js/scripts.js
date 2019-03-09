@@ -5,9 +5,8 @@ $('document').ready(function(){
     appendAndHideOtherRoleField();
     configureShirtOptions();
     $('label input:checkbox').on('change', handleTimeOptions);
+    
 });
-
-
 
 const appendAndHideOtherRoleField = () => {
     const otherInputLabel = '<label for ="other_role">Other Role:</label>';
@@ -97,8 +96,17 @@ const handleTimeOptions = (elem) => {
 
 const disableConflictingTimes = (selectedActivityTime, selectedInput) => {
     const $selectedCheckbox = $(selectedInput);
-    console.log('from disableConflictingTimes, here\'s your time:', selectedActivityTime);
-    console.log($selectedCheckbox);
+    const checkboxSiblings = $($selectedCheckbox).parent().siblings();
+    for (let sibling of checkboxSiblings){        
+        if ($selectedCheckbox[0].checked) {
+            if ($(sibling)[0].innerText.includes(selectedActivityTime)) {
+                $($(sibling).children()[0]).attr('disabled', true);
+           } 
+        } else {
+            $($(sibling).children()[0]).attr('disabled', false);
+        }
+    }
+
 }
 
 const calculateTotalPrice = (selectedActivityPrice) => {
