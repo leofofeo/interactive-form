@@ -1,9 +1,7 @@
 let priceTotal = 0;
 
 $('document').ready(function(){
-    console.log('hello world');
     $('#name').focus();
-
     appendAndHideOtherRoleField();
     configureShirtOptions();
     $('label input:checkbox').on('change', handleTimeOptions);
@@ -12,6 +10,7 @@ $('document').ready(function(){
 });
 
 const appendAndHideOtherRoleField = () => {
+    // Append 'other role input' as an option, and then hide it until 'other' is selected from the dropwdown menu
     const otherInputLabel = '<label for ="other_role">Other Role:</label>';
     const otherRoleInput = '<input id="other_role" name="other_role"/>';
     const otherRoleDiv = $('<div></div>').addClass('other_role_div').append(otherInputLabel, otherRoleInput);
@@ -28,6 +27,7 @@ const appendAndHideOtherRoleField = () => {
 }
 
 const configureShirtOptions = () => {
+    // Create the two different shirt type arrays that we can use to display appropriate options later on
     $('#colors-js-puns').hide();
     const js_puns = [
         'cornflowerblue',
@@ -42,6 +42,9 @@ const configureShirtOptions = () => {
 
     const shirtOptions = $('#color option').toArray();
 
+    // Every time our #design element changes, we check to see what the value of the selected theme is
+    // We then display the appropriate shirts using the array values from above
+    // Finally, if no theme is selected, we want to hide all options again
     $('#design').on('change', function(){
         if ($(this).val() === 'js puns') {
           shirtOptions.forEach(shirtOption => {
@@ -72,14 +75,9 @@ const configureShirtOptions = () => {
     });
 
 }
-const handleActivityRegistration = () => {
-    // With strings, you can use string.includes to check whether it contains the start date of some other string, which will allow you to sort accordingly
-    $('input:checkbox').on('change', console.log('test'));
-    console.log('hello from har');
-}
 
 const handleTimeOptions = (elem) => {
-    console.log('test');
+    // Create regex options for isolating the activity time and activity price from the selectedActivity's text
     const selectedTimeRegex = /((monday|tuesday|wednesday|thursday|friday|saturday|sunday) \d.m)/i;
     const selectedPriceRegex = /\$\d{3}/;
     const $checkbox = elem.target;
@@ -91,22 +89,25 @@ const handleTimeOptions = (elem) => {
         selectedTime = selectedTimeRegexResult[0];
     }
     const selectedPrice = $parentLabelText.match(selectedPriceRegex)[0].split('$')[1];
+    // Check to make sure the selected activity has a designated activity time, and call the disableConflictingTimes option to handle checkbox enabling/disabling for confling times
     if (selectedTime != ''){
-        disableConflictingTimes(selectedTime, elem.target);
+        disableConflictingTimes(selectedTime, $checkbox);
     }
     
+    // If selectedActivity is checked, we want to add its price to the totalPrice; otherwise (if we're unchecking) we subtract
     let calculationType;
-    if ($(elem.target)[0].checked) {
+    if ($($checkbox)[0].checked) {
         calculationType = 'add'
     } else {
         calculationType = 'subtract'
     }
-
     calculateTotalPrice(selectedPrice, calculationType);
 }
 
 const disableConflictingTimes = (selectedActivityTime, selectedInput) => {
-    console.log(selectedActivityTime);
+    // Find all child siblings of the selectedInput
+    // Loop through them - if they contain the selectedActivityTime in their innerText,
+    // disable them if the selectedInput is checked; otherwise, enable them
     const $selectedCheckbox = $(selectedInput);
     const checkboxSiblings = $($selectedCheckbox).parent().siblings();
     for (let sibling of checkboxSiblings){        
@@ -124,11 +125,14 @@ const disableConflictingTimes = (selectedActivityTime, selectedInput) => {
 }
 
 const calculateTotalPrice = (selectedActivityPrice, calcType) => {
+    // Convert the selectedActivityPrice to a number or set it to 0 if it's undefined,
+    // then either add it or subtract it from the global priceTotal variable
     const selectedPrice = Number(selectedActivityPrice) || 0;
     if (calcType === 'add') {
         priceTotal += selectedPrice;
     } else {
         priceTotal -= selectedPrice;
+        // Ensure that priceTotal can never go below $0
         if (priceTotal < 0) {
             priceTotal = 0;
         }
