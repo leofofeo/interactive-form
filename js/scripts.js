@@ -1,3 +1,5 @@
+let priceTotal = 0;
+
 $('document').ready(function(){
     console.log('hello world');
     $('#name').focus();
@@ -5,6 +7,7 @@ $('document').ready(function(){
     appendAndHideOtherRoleField();
     configureShirtOptions();
     $('label input:checkbox').on('change', handleTimeOptions);
+    $('fieldset.activities').append(`<h3>Price total: $<span class="price-total">${priceTotal}</span></h3>`);
     
 });
 
@@ -92,9 +95,18 @@ const handleTimeOptions = (elem) => {
         disableConflictingTimes(selectedTime, elem.target);
     }
     
+    let calculationType;
+    if ($(elem.target)[0].checked) {
+        calculationType = 'add'
+    } else {
+        calculationType = 'subtract'
+    }
+
+    calculateTotalPrice(selectedPrice, calculationType);
 }
 
 const disableConflictingTimes = (selectedActivityTime, selectedInput) => {
+    console.log(selectedActivityTime);
     const $selectedCheckbox = $(selectedInput);
     const checkboxSiblings = $($selectedCheckbox).parent().siblings();
     for (let sibling of checkboxSiblings){        
@@ -103,12 +115,27 @@ const disableConflictingTimes = (selectedActivityTime, selectedInput) => {
                 $($(sibling).children()[0]).attr('disabled', true);
            } 
         } else {
-            $($(sibling).children()[0]).attr('disabled', false);
+            if ($(sibling)[0].innerText.includes(selectedActivityTime)) {
+                $($(sibling).children()[0]).attr('disabled', false);
+           } 
         }
     }
 
 }
 
-const calculateTotalPrice = (selectedActivityPrice) => {
+const calculateTotalPrice = (selectedActivityPrice, calcType) => {
+    const selectedPrice = Number(selectedActivityPrice) || 0;
+    if (calcType === 'add') {
+        priceTotal += selectedPrice;
+    } else {
+        priceTotal -= selectedPrice;
+        if (priceTotal < 0) {
+            priceTotal = 0;
+        }
+    }
+    updatePriceUI();
+}
 
+const updatePriceUI = () => {
+    $('.price-total').html(priceTotal);
 }
