@@ -8,6 +8,7 @@ $('document').ready(function(){
     $('fieldset.activities').append(`<h3>Price total: $<span class="price-total">${priceTotal}</span></h3>`);
     configureInitialPayment();
     $('#payment').on('change', configurePaymentVisibility);
+    configureValidationWarnings();
     $('form').on('submit', validateForm);
 });
 
@@ -177,9 +178,11 @@ const validateForm = event => {
     const nameExists = validateNameField();
     const validEmail = validateEmailField();
     const activitySelected = validateActivities();
-    const validCreditCard = validateCreditCard();
-
-    if (nameExists && validEmail &&activitySelected && validCreditCard) {
+    let validCreditCard = true;
+    if ($('#payment').val() === "credit card") {
+        validCreditCard = validateCreditCard();
+    }
+    if (nameExists && validEmail && activitySelected && validCreditCard) {
         formInvalid = false;
     }
     if (formInvalid) {
@@ -189,8 +192,12 @@ const validateForm = event => {
 
 const validateNameField = () => {
     if ($('#name').val()) {
+        console.log('name is valid');
+        $('#name-warning').html('');
         return true;
     } else {
+        console.log('name is invalid');
+        $('#name-warning').html('Please enter a name');
         return false;
     }
 }
@@ -199,8 +206,10 @@ const validateEmailField = () => {
     const email = $('#mail').val();
     const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
     if (emailRegex.test(email)) {
+        $('#email-warning').html('');
         return true;
     } else {
+        $('#email-warning').html('Please enter a valid email address');
         return false;
     }
 }
@@ -209,9 +218,11 @@ const validateActivities = () => {
     const checkboxes = $('input[type="checkbox"]');
     for (let checkbox of checkboxes) {
         if (checkbox.checked){
+            $('#activities-warning').html('');
             return true;
         }
     }
+    $('#activities-warning').html('Please select at least one activity');
     return false;
 }
 
@@ -220,34 +231,42 @@ const validateCreditCard = () => {
     const zipcode = $('#zip').val();
     const cvv = $('#cvv').val();
     if (!Number(ccNum)){
-        console.log('please put in a valid number');
+        $('#cc-num-warning').html('Please insert only numeric digits');
         return false;
+    } else {
+        $('#cc-num-warning').html('');
     }
 
     if (ccNum.length > 16 || ccNum.length < 13) {
-        console.log('enter valid length');
+        $('#cc-num-warning').html('Credit card number must be between 13 and 16 characters');
         return false;
+    } else {
+        $('#cc-num-warning').html('');
     }
 
-    if (!Number(zipcode)){
-        console.log('please put in a valid zipcode');
-        return false;
+    if (!Number(zipcode) || zipcode.length !== 5){
+        $('#zip-warning').html('Please enter a valid zip code');
+        return false
+    } else {
+        $('#zip-warning').html('');
     }
 
-    if (zipcode.length !== 5) {
-        console.log('enter valid length');
+    if (!Number(cvv) || ccv.length !== 3){
+        $('#cvv-warning').html('Please enter a valid cvv');
         return false;
-    }
-
-    if (!Number(cvv)){
-        console.log('please put in a valid cvv');
-        return false;
-    }
-
-    if (cvv.length !== 3) {
-        console.log('enter valid length');
-        return false;
+    } else {
+        $('#cvv-warning').html('');
     }
 
     return true;
+}
+
+const configureValidationWarnings = () => {
+    console.log('from configurevalidation options');
+    $('#name').after('<div class="validation-warning" id="name-warning"></div>');
+    $('#mail').after('<div class="validation-warning" id="email-warning"></div>');
+    $('fieldset.activities').prepend('<div class="validation-warning" id="activities-warning"></div>');
+    $('#cc-num').after('<div class="validation-warning" id="cc-num-warning"></div>');
+    $('#zip').after('<div class="validation-warning" id="zip-warning"></div>');
+    $('#cvv').after('<div class="validation-warning" id="cvv-warning"></div>');
 }

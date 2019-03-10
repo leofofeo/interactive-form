@@ -117,6 +117,12 @@ button:hover {
 	background: #184c62;
 }
 
+.validation-warning {
+	color: red;
+	font-size: .8em;
+	margin: -5px 0px 10px 0px;
+}
+
 /* ================================= 
   Page Styles
 ==================================== */
