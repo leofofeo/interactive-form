@@ -208,7 +208,15 @@ const validateEmailField = () => {
 }
 
 const validateActivities = () => {
-    
+    const checkboxes = $('input[type="checkbox"]');
+    for (let checkbox of checkboxes) {
+        if (checkbox.checked){
+            console.log('checkbox true!');
+            return true;
+        }
+    }
+    console.log('checkbox not checked');
+    return false;
 }
 
 const validateCreditCard = () => {
