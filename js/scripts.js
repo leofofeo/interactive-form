@@ -178,8 +178,6 @@ const validateForm = event => {
     const validEmail = validateEmailField();
     const activitySelected = validateActivities();
     const validCreditCard = validateCreditCard();
-    console.log('hello from validateForm');
-    console.log('prevented default');
 
     if (nameExists && validEmail &&activitySelected && validCreditCard) {
         formInvalid = false;
@@ -211,14 +209,45 @@ const validateActivities = () => {
     const checkboxes = $('input[type="checkbox"]');
     for (let checkbox of checkboxes) {
         if (checkbox.checked){
-            console.log('checkbox true!');
             return true;
         }
     }
-    console.log('checkbox not checked');
     return false;
 }
 
 const validateCreditCard = () => {
-    
+    const ccNum = $('#cc-num').val();
+    const zipcode = $('#zip').val();
+    const cvv = $('#cvv').val();
+    if (!Number(ccNum)){
+        console.log('please put in a valid number');
+        return false;
+    }
+
+    if (ccNum.length > 16 || ccNum.length < 13) {
+        console.log('enter valid length');
+        return false;
+    }
+
+    if (!Number(zipcode)){
+        console.log('please put in a valid zipcode');
+        return false;
+    }
+
+    if (zipcode.length !== 5) {
+        console.log('enter valid length');
+        return false;
+    }
+
+    if (!Number(cvv)){
+        console.log('please put in a valid cvv');
+        return false;
+    }
+
+    if (cvv.length !== 3) {
+        console.log('enter valid length');
+        return false;
+    }
+
+    return true;
 }
