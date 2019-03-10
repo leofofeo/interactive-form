@@ -192,11 +192,9 @@ const validateForm = event => {
 
 const validateNameField = () => {
     if ($('#name').val()) {
-        console.log('name is valid');
         $('#name-warning').html('');
         return true;
     } else {
-        console.log('name is invalid');
         $('#name-warning').html('Please enter a name');
         return false;
     }
@@ -262,7 +260,6 @@ const validateCreditCard = () => {
 }
 
 const configureValidationWarnings = () => {
-    console.log('from configurevalidation options');
     $('#name').after('<div class="validation-warning" id="name-warning"></div>');
     $('#mail').after('<div class="validation-warning" id="email-warning"></div>');
     $('fieldset.activities').prepend('<div class="validation-warning" id="activities-warning"></div>');
