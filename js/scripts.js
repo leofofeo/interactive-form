@@ -2,7 +2,7 @@ let priceTotal = 0;
 
 $('document').ready(function(){
     $('#name').focus();
-    appendAndHideOtherRoleField();
+    hideOtherRoleField();
     configureShirtOptions();
     $('label input:checkbox').on('change', handleTimeOptions);
     $('fieldset.activities').append(`<h3>Price total: $<span class="price-total">${priceTotal}</span></h3>`);
@@ -12,12 +12,8 @@ $('document').ready(function(){
     $('form').on('submit', validateForm);
 });
 
-const appendAndHideOtherRoleField = () => {
+const hideOtherRoleField = () => {
     // Append 'other role input' as an option, and then hide it until 'other' is selected from the dropwdown menu
-    const otherInputLabel = '<label for ="other_role">Other Role:</label>';
-    const otherRoleInput = '<input id="other_role" name="other_role"/>';
-    const otherRoleDiv = $('<div></div>').addClass('other_role_div').append(otherInputLabel, otherRoleInput);
-    $('fieldset:first-of-type').append(otherRoleDiv);
     $('.other_role_div').hide();
 
     $('#title').on('change', function(){
